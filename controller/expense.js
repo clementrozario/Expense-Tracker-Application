@@ -1,18 +1,35 @@
 const Expense = require('../models/expenses');
+const User = require('../models/user');
 
-const addexpense = (req, res) => {
+
+const addexpense = async (req, res) => {
     const { expenseamount, description, category } = req.body;
 
-    if (expenseamount == undefined || expenseamount.length === 0) {
+    if (expenseamount === undefined || expenseamount.length === 0) {
         return res.status(400).json({ success: false, message: 'Parameters missing' });
     }
 
-    Expense.create({ expenseamount, description, category,userId: req.user.id}).then(expense => {
-        return res.status(201).json({ expense, success: true });
-    }).catch(err => {
-        return res.status(500).json({ success: false, error: err });
-    });
+    try {
+        const expense = await Expense.create({ 
+            expenseamount, 
+            description, 
+            category, 
+            userId: req.user.id 
+        });
+
+        const totalExpense = Number(req.user.totalExpenses) + Number(expenseamount);
+        
+        await User.update(
+            { totalExpenses: totalExpense },
+            { where: { id: req.user.id } }
+        );
+
+        return res.status(200).json({ expense, success: true });
+    } catch (err) {
+        return res.status(500).json({ success: false, error: err.message });
+    }
 };
+
 
 const getexpenses = (req, res) => {
     Expense.findAll({where:{userId:req.user.id}}).then(expenses => {

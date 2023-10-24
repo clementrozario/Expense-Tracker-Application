@@ -100,6 +100,43 @@ function removeExpensefromUI(expenseid){
     document.getElementById(expenseElemId).remove();
 }
 
+function checkUserPremiumStatus() {
+    const token = localStorage.getItem('token');
+    if (token) {
+        const decodeToken = parseJwt(token);
+        return decodeToken.ispremiumuser; // Assuming ispremiumuser is a boolean indicating premium status
+    }
+    return false; // Return false if no token is found (user is not authenticated)
+}
+
+// Enable or disable the download button based on user's premium status
+const downloadButton = document.getElementById('downloadexpense');
+if (!checkUserPremiumStatus()) {
+    downloadButton.setAttribute('disabled', true);
+}
+
+
+function download(){
+    const token = localStorage.getItem('token');
+    axios.get('http://localhost:3000/user/download', { headers: {"Authorization" : token} })
+    .then((response) => {
+        if(response.status === 201){
+            //the bcakend is essentially sending a download link
+            //  which if we open in browser, the file would download
+            var a = document.createElement("a");
+            a.href = response.data.fileUrl;
+            a.download = 'myexpense.csv';
+            a.click();
+        } else {
+            throw new Error(response.data.message)
+        }
+
+    })
+    .catch((err) => {
+        showError(err)
+    });
+}
+
 document.getElementById('rzp-button1').onclick = async function (e) {
     const token = localStorage.getItem('token');
     const response  = await axios.get('http://localhost:3000/purchase/premiummembership', { headers: {"Authorization" : token} });
@@ -131,3 +168,4 @@ document.getElementById('rzp-button1').onclick = async function (e) {
     alert('Something went wrong');
  });
 }
+

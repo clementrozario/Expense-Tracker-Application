@@ -115,26 +115,43 @@ if (!checkUserPremiumStatus()) {
     downloadButton.setAttribute('disabled', true);
 }
 
-
-function download(){
+function download() {
     const token = localStorage.getItem('token');
-    axios.get('http://localhost:3000/user/download', { headers: {"Authorization" : token} })
-    .then((response) => {
-        if(response.status === 201){
-            //the bcakend is essentially sending a download link
-            //  which if we open in browser, the file would download
-            var a = document.createElement("a");
-            a.href = response.data.fileUrl;
-            a.download = 'myexpense.csv';
-            a.click();
-        } else {
-            throw new Error(response.data.message)
-        }
+    axios.get('http://localhost:3000/user/download', { headers: { "Authorization": token }, responseType: 'arraybuffer' })
+        .then((response) => {
+            // Create a Blob from the response data (ArrayBuffer)
+            const blob = new Blob([response.data], { type: 'application/octet-stream' });
 
-    })
-    .catch((err) => {
-        showError(err)
-    });
+            // Create a download link and trigger the download
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'myexpense.txt';
+            a.click();
+        })
+        .catch((err) => {
+            showError(err);
+        });
+}
+
+function downloadUrls() {
+    const token = localStorage.getItem('token')
+    axios.get('http://localhost:3000/user/downloadurls', { headers: { "Authorization": token } })
+        .then((response) => {
+            const parentNode = document.getElementById('downloadUrl');
+            parentNode.innerHTML = '';
+            parentNode.innerHTML += '<h2> Download Urls </h2>'
+            for (var i = 0; i < response.data.allUrls.length; i++) {
+                showUrl(response.data.allUrls[i]);
+            }
+        })
+        .catch(err => console.log(err))
+}
+
+function showUrl(url) {
+    const parentNode = document.getElementById('downloadUrl');
+    const childHTML = `<li id=${url.id}> url_id${url.id} ${url.createdAt} <a href="${url.url}"> Download </a>`;
+    parentNode.innerHTML += childHTML;
 }
 
 document.getElementById('rzp-button1').onclick = async function (e) {

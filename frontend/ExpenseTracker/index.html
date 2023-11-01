@@ -23,10 +23,16 @@
     <div id="message"></div>
     <button id="rzp-button1">Buy Premium</button>
     <button onclick="download() " id="downloadexpense">Download File</button>
+    <button onclick="downloadUrls()" class="btn3">Show Download Urls</button>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <h1>Expenses</h1>
     <ul id='listOfExpenses'></ul>
+    <ul id="downloadUrl" class="list-group"></ul>
+    
+
     <div id="leaderboard"></div>
+    <ul id="downloadUrl" class="list-group"></ul>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src='./index.js'></script>
 </body>

@@ -7,12 +7,16 @@ const User = require('./models/user');
 const Expense = require('./models/expenses');
 const Order = require('./models/orders');
 const Forgotpassword = require('./models/forgotpassword');
+const Url = require('./models/downloadURL')
+
 
 const userRoutes = require('./routes/user');
 const expenseRoutes = require('./routes/expense');
 const purchaseRoutes = require('./routes/purchase');
 const premiumFeatureRoutes = require('./routes/premiumFeature')
 const resetPasswordRoutes = require('./routes/resetpassword')
+
+
 
 const app = express();
 const dotenv = require('dotenv');
@@ -36,6 +40,9 @@ Order.belongsTo(User);
 
 User.hasMany(Forgotpassword);
 Forgotpassword.belongsTo(User);
+
+User.hasMany(Url);
+Url.belongsTo(User);
 
 sequelize.sync().then(() => {
     app.listen(3000, () => {

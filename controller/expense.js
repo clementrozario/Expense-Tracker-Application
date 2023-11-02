@@ -85,13 +85,23 @@ const addexpense = async (req, res) => {
 };
 
 
-const getexpenses = (req, res) => {
-    Expense.findAll({where:{userId:req.user.id}}).then(expenses => {
-        return res.status(200).json({ expenses, success: true });
-    }).catch(err => {
-        console.log(err);
+const getexpenses = async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.pageSize) || 5; // Number of items per page
+    const offset = (page - 1) * pageSize;
+
+    try {
+        const expenses = await Expense.findAndCountAll({
+            where: { userId: req.user.id },
+            limit: pageSize,
+            offset: offset
+        });
+
+        return res.status(200).json({ expenses: expenses.rows, totalItems: expenses.count, success: true });
+    } catch (err) {
+        console.error(err);
         return res.status(500).json({ error: err, success: false });
-    });
+    }
 };
 
 const deleteexpense = async (req, res) => {

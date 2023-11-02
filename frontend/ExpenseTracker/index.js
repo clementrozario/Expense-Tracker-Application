@@ -186,3 +186,62 @@ document.getElementById('rzp-button1').onclick = async function (e) {
  });
 }
 
+let currentPage = 1;
+let pageSize = localStorage.getItem('pageSize') || 10; // Default to 10 if not set in localStorage
+
+function loadExpenses(page) {
+    const token = localStorage.getItem('token');
+    axios.get(`http://localhost:3000/expense/getexpenses?page=${page}&pageSize=${pageSize}`, { headers: { "Authorization": token } })
+        .then(response => {
+            // Update UI with expenses data
+            renderExpenses(response.data.expenses);
+
+            // Update current page number
+            currentPage = page;
+
+            // Update total pages and pagination controls
+            const totalItems = response.data.totalItems;
+            const totalPages = Math.ceil(totalItems / pageSize);
+            document.getElementById('totalPages').textContent = totalPages;
+            updatePaginationControls();
+        })
+        .catch(err => {
+            showError(err);
+        });
+}
+
+function applyPageSize() {
+    // Get the selected value from the dropdown
+    const selectElement = document.getElementById('pageSizeSelect');
+    const selectedPageSize = selectElement.value;
+
+    // Update the pageSize variable and store it in localStorage
+    pageSize = selectedPageSize;
+    localStorage.setItem('pageSize', pageSize);
+
+    // Reload expenses with the updated pageSize
+    loadExpenses(currentPage);
+}
+
+function renderExpenses(expenses) {
+    const parentElement = document.getElementById('listOfExpenses');
+    parentElement.innerHTML = '';
+    expenses.forEach(expense => {
+        addNewExpensetoUI(expense);
+    });
+}
+
+function updatePaginationControls() {
+    document.getElementById('currentPage').textContent = currentPage;
+
+    const paginationDiv = document.getElementById('pagination');
+    const isFirstPage = currentPage === 1;
+    const isLastPage = currentPage === parseInt(document.getElementById('totalPages').textContent);
+
+    paginationDiv.querySelector('button:first-child').disabled = isFirstPage;
+    paginationDiv.querySelector('button:nth-child(2)').disabled = isFirstPage;
+    paginationDiv.querySelector('button:nth-child(4)').disabled = isLastPage;
+}
+
+// Initial load with default page size
+loadExpenses(currentPage);

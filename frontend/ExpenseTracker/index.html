@@ -25,10 +25,32 @@
     <button onclick="download() " id="downloadexpense">Download File</button>
     <button onclick="downloadUrls()" class="btn3">Show Download Urls</button>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
     <h1>Expenses</h1>
     <ul id='listOfExpenses'></ul>
     <ul id="downloadUrl" class="list-group"></ul>
     
+
+    <div id="pageSizeContainer">
+        <label for="pageSize">Number of Expenses per Page:</label>
+        <select id="pageSizeSelect">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <!-- Add more options as needed -->
+        </select>
+        <button onclick="applyPageSize()">Apply</button>
+    </div>
+    <div id="pagination">
+        <button onclick="loadExpenses(1)">First</button>
+        <button onclick="loadExpenses(currentPage - 1)">Previous</button>
+        <span>Page <span id="currentPage">1</span> of <span id="totalPages">1</span></span>
+        <button onclick="loadExpenses(currentPage + 1)">Next</button>
+    </div>
+    <ul id='listOfExpenses'></ul>
+    
+        
 
     <div id="leaderboard"></div>
     <ul id="downloadUrl" class="list-group"></ul>

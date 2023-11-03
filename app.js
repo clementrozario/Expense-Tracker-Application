@@ -1,5 +1,5 @@
 const path = require('path');
-
+const fs = require('fs');
 const express = require('express');
 var cors = require('cors');
 const sequelize = require('./util/database');
@@ -9,6 +9,8 @@ const Order = require('./models/orders');
 const Forgotpassword = require('./models/forgotpassword');
 const Url = require('./models/downloadURL')
 
+const helmet=require('helmet')
+const morgan = require('morgan');
 
 const userRoutes = require('./routes/user');
 const expenseRoutes = require('./routes/expense');
@@ -23,8 +25,17 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
+
+app.use(helmet());
 app.use(cors());
 app.use(express.json());
+
+const accessLogStream=fs.createWriteStream(
+    path.join(__dirname, 'access.log'),
+   { flags: 'a'}
+);
+
+app.use(morgan('combined',{stream:accessLogStream}))
 
 app.use('/user', userRoutes);
 app.use('/expense', expenseRoutes);

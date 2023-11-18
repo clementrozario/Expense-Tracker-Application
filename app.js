@@ -1,47 +1,31 @@
 const path = require('path');
 const fs = require('fs');
 const express = require('express');
-var cors = require('cors');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 const sequelize = require('./util/database');
 const User = require('./models/user');
 const Expense = require('./models/expenses');
 const Order = require('./models/orders');
 const Forgotpassword = require('./models/forgotpassword');
-const Url = require('./models/downloadURL')
+const Url = require('./models/downloadURL');
+const dotenv = require('dotenv');
+dotenv.config();
 
-// const helmet=require('helmet')
-// const morgan = require('morgan');
+const app = express();
+const staticpath = path.resolve(__dirname, './public'); // Define staticpath here
+app.use(express.static(staticpath));
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({extended:false}));
 
 const userRoutes = require('./routes/user');
 const expenseRoutes = require('./routes/expense');
 const purchaseRoutes = require('./routes/purchase');
-const premiumFeatureRoutes = require('./routes/premiumFeature')
-const resetPasswordRoutes = require('./routes/resetpassword')
+const premiumFeatureRoutes = require('./routes/premiumFeature');
+const resetPasswordRoutes = require('./routes/resetpassword');
 
-
-
-const app = express();
-const dotenv = require('dotenv');
-
-dotenv.config();
-
-
-// app.use(helmet());
-app.use(cors());
-app.use(express.json());
-
-// const accessLogStream=fs.createWriteStream(
-//     path.join(__dirname, 'access.log'),
-//    { flags: 'a'}
-// );
-
-// app.use(morgan('combined',{stream:accessLogStream}))
-
-// Serve static files from the 'view' directory
-app.use(express.static(path.join(__dirname, 'view')));
-
-// Serve static files from the 'view/css' directory
-app.use('/css', express.static(path.join(__dirname, 'view/css')));
+app.use(express.static(staticpath));
 
 app.use('/user', userRoutes);
 app.use('/expense', expenseRoutes);
@@ -62,7 +46,6 @@ User.hasMany(Url);
 Url.belongsTo(User);
 
 sequelize
-    // .sync({ force: true }) 
     .sync()
     .then(() => {
         const port = process.env.PORT || 3000;

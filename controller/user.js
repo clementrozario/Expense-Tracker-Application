@@ -11,12 +11,13 @@ function isstringinvalid(string){
 }
 
  const signup = async (req, res)=>{
-    try{
-    const { name, email, password } = req.body;
-    console.log('email', email)
-    if(isstringinvalid(name) || isstringinvalid(email || isstringinvalid(password))){
-        return res.status(400).json({err: "Bad parameters . Something is missing"})
-    }
+    try {
+        console.log('Entered signup function');
+        const { name, email, password } = req.body;
+        console.log('Received data:', { name, email, password });
+        if (isstringinvalid(name) || isstringinvalid(email)|| isstringinvalid(password)) {
+            return res.status(400).json({ err: "Bad parameters . Something is missing" });
+        }
     const saltrounds = 10;
     bcrypt.hash(password, saltrounds, async (err, hash) => {
         console.log(err)

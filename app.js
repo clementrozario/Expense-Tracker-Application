@@ -56,5 +56,5 @@ sequelize
         });
     })
     .catch(err => {
-        console.error('Unable to connect to the database', err);
+        console.error('Unable to connect to the database due to some reasons', err);
     });

@@ -43,6 +43,7 @@ app.use(express.static(path.join(__dirname, 'view')));
 // Serve static files from the 'view/css' directory
 app.use('/css', express.static(path.join(__dirname, 'view/css')));
 
+
 app.use('/user', userRoutes);
 app.use('/expense', expenseRoutes);
 app.use('/purchase', purchaseRoutes);
@@ -72,5 +73,5 @@ sequelize
         });
     })
     .catch(err => {
-        console.error('Unable to connect to the database:', err);
+        console.error('Unable to connect to the database something happened to database', err);
     });

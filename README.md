@@ -16,9 +16,9 @@ The Expense Tracker Application is a web-based tool designed to help users track
 - User authentication and authorization (sign up, log in)
 - Recording and categorization of expenses
 - Tracking expenses over time
-- Integration with payment gateways for premium features
-- Password reset functionality
-- Middleware for authentication and authorization
+- Integration with payment gateways(Razor Pay) for premium features
+- Password reset functionality(Brevo)
+- Middleware for authentication and authorization(JWT)
 
 ## Prerequisites
 

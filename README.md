@@ -10,7 +10,6 @@ The Expense Tracker Application is a web-based tool designed to help users track
 - [Installation](#installation)
 - [Usage](#usage)
 - [Code Structure](#code-structure)
-- [Dependencies](#dependencies)
 
 ## Features
 
